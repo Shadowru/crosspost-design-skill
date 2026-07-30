@@ -38,6 +38,7 @@ PROTECT = re.compile(
     r"|(\]\([^)]*\))"                  # markdown link targets
     r"|(<[^>]+>)"                      # html tags
     r"|(\{\{[^}]*\}\})"                # {{placeholders}}
+    r"|(\[![A-Z]+\])"                  # callout markers: [!NOTE], [!IMPORTANT]
 )
 
 
