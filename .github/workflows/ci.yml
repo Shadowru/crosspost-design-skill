@@ -1,0 +1,26 @@
+name: selftest
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Run the end-to-end self test
+        run: ./scripts/selftest.sh
+
+      - name: Validate the plugin manifest the way the review pipeline does
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          claude plugin validate .claude-plugin/plugin.json --strict
+          claude plugin validate .claude-plugin/marketplace.json --strict
