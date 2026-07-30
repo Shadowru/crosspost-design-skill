@@ -226,7 +226,7 @@ Copy or symlink the directory into your agent's skills folder — for Claude Cod
 
 Then just ask, in either language:
 
-> «Разложи эту статью по Дзену, ВК и Хабру»
+> «Сверстай эту статью под Дзен, ВК и Хабр»
 > "Make an Instant View version and a channel post out of this"
 
 ## Verified platform facts

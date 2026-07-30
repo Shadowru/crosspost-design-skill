@@ -10,7 +10,7 @@ affect a single generation.
 |---|---|---|
 | A1 | «Оформи эту статью для Дзена и ВК» | trigger; platforms = dzen, vk; no platform question |
 | A2 | "Make an Instant View version of this post" | trigger; telegram; asks about telegra.ph vs own domain |
-| A3 | «Разложи текст по площадкам: телега, хабр» | trigger; telegram + habr |
+| A3 | «Сверстай текст под телегу и Хабр» | trigger; telegram + habr |
 | A4 | "I want this published on Habr and as a Telegram post" | trigger; habr + telegram |
 | A5 | «Вот docx, сверстай для всех каналов, не спрашивай» | trigger; auto mode; docx normalised first; all four |
 | A6 | "Cross-post this article" (no platforms named) | trigger; recommends from platform-index, builds all four |
