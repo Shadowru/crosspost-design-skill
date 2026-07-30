@@ -209,6 +209,7 @@ scripts/
   validate_post.py              per-platform markup compliance
   telegraph_publish.py          publish to telegra.ph (native Instant View)
   wrap_preview.py               copy-to-clipboard preview page
+  make_web_zip.py               archive for uploading to claude.ai
   extract_docx.py               .docx → Markdown, no dependencies
 assets/
   sample-article.ru.md          Russian sample exercising every element
@@ -262,6 +263,33 @@ For a single project, do the same under `.claude/skills/crosspost-design`.
 > Do not install both ways at once. The marketplace copy takes precedence and
 > the symlinked one silently fails to load — `claude plugin list` reports
 > "name is already taken". Pick one route.
+
+**Claude in the browser (claude.ai):**
+
+The web app installs skills by upload rather than from a marketplace, and it
+needs code execution turned on — without it the skill's scripts cannot run.
+
+1. **Settings → Capabilities** — turn on code execution. On Team and Enterprise,
+   an organization owner has to allow skills first under **Organization
+   settings → Skills**.
+2. Build the archive:
+   ```bash
+   python3 scripts/make_web_zip.py
+   ```
+   You get `crosspost-design.zip` (~88 KB). The script puts a
+   `crosspost-design/` folder with `SKILL.md` at the archive root — the exact
+   shape claude.ai expects, and the one hand-made zips usually get wrong.
+3. **Customize → Skills → + → Upload a skill** — pick the archive.
+
+Then just ask in plain language, or explicitly: "use crosspost-design to…".
+
+> [!NOTE]
+> What differs in the browser. The archive leaves out the README screenshots,
+> the eval suite and the plugin manifests — none of them do anything in the
+> sandbox. `telegraph_publish.py` calls `api.telegra.ph`, so if your sandbox has
+> no outbound network you will have to publish the page from the CLI or by hand.
+> `wrap_preview.py` still builds the copy-to-clipboard page, but you have to
+> download the file and open it yourself.
 
 <details>
 <summary><strong>Other agents</strong></summary>
