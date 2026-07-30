@@ -1,162 +1,244 @@
-# crosspost-design · Telegram IV · VK · Dzen · Habr
+# crosspost-design · Telegram IV · ВКонтакте · Дзен · Хабр
 
-**One canonical Markdown source → four published articles, in English or Russian.**
+**Один канонический Markdown → четыре опубликованные статьи, на русском или английском.**
 
-An agent skill (Claude Code / Codex / Cursor …) that formats an article for
-Telegram Instant View, VK, Dzen and Habr — platforms that all strip CSS and
-each accept a different, short whitelist of markup. It builds every target
-deterministically, applies the typography of the language, and reports exactly
-what each platform degraded.
+Скилл для агента (Claude Code / Codex / Cursor …), который верстает статью под
+Telegram Instant View, ВК, Дзен и Хабр — площадки, каждая из которых вырезает
+CSS и принимает свой короткий белый список разметки. Скилл детерминированно
+собирает все цели, применяет типографику нужного языка и показывает, что именно
+каждая площадка потеряла.
 
-English · [Русский](README.ru.md)
+Русский · [English](README.en.md)
 
-Adapted from [gzh-design-skill](https://github.com/isjiamu/gzh-design-skill)
-(WeChat / 公众号, Chinese). AGPL-3.0 — see [NOTICE](NOTICE) for what was kept,
-adapted and replaced.
+Адаптация [gzh-design-skill](https://github.com/isjiamu/gzh-design-skill)
+(WeChat / 公众号, китайский). AGPL-3.0 — что сохранено, переработано и заменено,
+описано в [NOTICE](NOTICE).
 
 ---
 
-## The premise
+## Один прогон
 
-WeChat lets you paste arbitrary inline CSS, so a WeChat skill can ship colour
-themes. **Telegram, VK, Dzen and Habr do not.** Every one of them deletes
-`style`, `class`, fonts and colours on import. What survives is structure and
+Проверка исходника → сборка → проверка соответствия. Ноль ERROR означает «можно
+публиковать».
+
+![Прогон конвейера: source_lint, typography_lint, build_targets, validate_post](docs/screenshots/pipeline.png)
+
+## Исходная посылка
+
+WeChat разрешает произвольный инлайновый CSS — поэтому там имеет смысл возить с
+собой цветовые темы. **Telegram, ВК, Дзен и Хабр — нет.** Каждая площадка
+удаляет `style`, `class`, шрифты и цвета при импорте. Остаются структура и
 Unicode.
 
-So the design layer here is:
+Поэтому «оформление» здесь — это:
 
-- **structure** — section rhythm, a lede that works as a feed snippet, TL;DR,
-  callouts, one bold anchor per section;
-- **typography** — «ёлочки» or curly quotes, real dashes, ellipses, non-breaking
-  spaces; these survive because they are characters, not styling;
-- **honest degradation** — a table becomes a monospaced block on telegra.ph and a
-  list on VK, and you are told so before you publish.
+- **структура**: ритм разделов, лид, который работает как сниппет в ленте,
+  блок «Коротко», врезки, один жирный акцент на раздел;
+- **типографика**: «ёлочки», настоящие тире, многоточие, неразрывные пробелы —
+  они выживают, потому что это символы, а не стили;
+- **честная деградация**: таблица становится моноширинным блоком в telegra.ph и
+  списком во ВК, и вы узнаёте об этом до публикации, а не после.
 
-## What you get
+## Как это выглядит
 
-| Target | File | How it gets published |
+Ниже — одна и та же статья, собранная под четыре площадки. Смотреть надо не на
+красоту, а на различия: где таблица осталась таблицей, а где схлопнулась в
+список; где код остался кодом, а где стал цитатой.
+
+### Telegram Instant View — живая страница
+
+Единственный настоящий скриншот: страницу опубликовал сам скилл командой
+`telegraph_publish.py`, у telegra.ph Instant View работает из коробки.
+
+**[Открыть демо →](https://telegra.ph/Kak-perestat-perepisyvat-statyu-chetyre-raza-07-30)**
+(вставьте ссылку в любой чат Telegram — появится кнопка Instant View)
+
+![Страница telegra.ph: блок «Коротко» как aside, таблица моноширинным блоком](docs/screenshots/telegram-iv.png)
+
+Видно ограничения telegra.ph: заголовки только `h3`/`h4`, таблиц нет вообще —
+таблица из исходника стала выровненным моноширинным блоком, а `:::tldr`
+превратился в `<aside>`.
+
+### Пост в канал
+
+![Анонс в Telegram: заголовок, лид, три буллита, ссылка, хэштеги — 435 из 4096 символов](docs/screenshots/telegram-post.png)
+
+Отдельный артефакт: у сообщений Telegram нет блочных тегов вообще, структура
+держится на переводах строк. Буллиты берутся из `:::tldr`, ссылка «Читать
+целиком» — из опубликованной страницы, счётчик символов проверяется валидатором.
+
+### ВКонтакте и Дзен — там, где больнее всего
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/vk.png" alt="Статья ВК: таблица схлопнута в список"></td>
+<td width="50%"><img src="docs/screenshots/dzen.png" alt="Статья Дзена: заголовки h2/h3, форматирование внутри списков снято"></td>
+</tr>
+<tr>
+<td><b>ВКонтакте.</b> Таблица схлопнулась в список «первая ячейка — колонка:
+значение». Кода нет как класса — блок кода стал цитатой с неразрывными
+пробелами вместо отступов. Картинки не вставляются вообще: на их месте
+нумерованные заглушки и список загрузки в отчёте.</td>
+<td><b>Дзен.</b> Заголовки <code>h2</code>/<code>h3</code>, таблица так же
+схлопнута. Главная ловушка площадки — форматирование внутри пунктов списка не
+рендерится вообще, поэтому сборщик его снимает сам и пишет об этом в отчёт.</td>
+</tr>
+</table>
+
+### Хабр — единственная площадка, где ничего не теряется
+
+![Публикация на Хабре: настоящая таблица, заголовки h1–h3](docs/screenshots/habr.png)
+
+Та же таблица осталась таблицей, код — кодом с указанием языка, спойлер —
+настоящим `<spoiler>`. Если в материале есть код, таблицы или формулы, Хабр
+должен быть первой целью, а не последней.
+
+### Отчёт о деградации
+
+![Отчёт: по каждой площадке список того, что изменилось и что надо сделать руками](docs/screenshots/report.png)
+
+Главная страховка от «вставил и не заметил». По каждой площадке: какие файлы
+собраны, что деградировало и что придётся сделать руками — например, в каком
+порядке загружать картинки во ВК.
+
+> **Честно про эти картинки.** Настоящий скриншот здесь один — страница
+> telegra.ph, потому что её публикует сам скилл. Для ВК, Дзена и Хабра
+> интерфейсы недоступны без аккаунта, поэтому показан **рендер реально собранных
+> артефактов** в нейтральной читалке: содержимое и ограничения настоящие,
+> оформление площадок не имитируется. Пересобрать всё:
+> `node docs/make-screenshots.mjs out docs/screenshots`.
+
+## Что получается на выходе
+
+| Цель | Файл | Как публиковать |
 |---|---|---|
-| Telegram Instant View | `{slug}.telegram-iv.html` | `telegraph_publish.py` → a link with native IV |
-| Instant View (own site) | `{slug}.iv-page.html` | host it + the IV template in `assets/` |
-| Telegram announcement | `{slug}.telegram-post.html` | `parse_mode=HTML`, ≤ 4096 chars |
-| VK article | `{slug}.vk.html` | preview page → Copy → paste |
-| Dzen | `{slug}.dzen.html`, `{slug}.dzen.rss.xml` | paste, or RSS ingestion |
-| Habr | `{slug}.habr.md` | paste in Markdown mode |
-| Degradation report | `{slug}.report.md` | what was lost, what to do by hand |
+| Telegram Instant View | `{slug}.telegram-iv.html` | `telegraph_publish.py` → ссылка с готовым IV |
+| Instant View на своём сайте | `{slug}.iv-page.html` | хостите страницу + шаблон правил из `assets/` |
+| Анонс в канал | `{slug}.telegram-post.html` | `parse_mode=HTML`, до 4096 символов |
+| Статья ВК | `{slug}.vk.html` | страница предпросмотра → «Копировать» → вставка |
+| Дзен | `{slug}.dzen.html`, `{slug}.dzen.rss.xml` | вставка в редактор или RSS |
+| Хабр | `{slug}.habr.md` | вставка в режиме Markdown |
+| Отчёт о деградации | `{slug}.report.md` | что потерялось и что делать руками |
 
-## Quick start
+## Быстрый старт
 
 ```bash
-# 1. lint the source: structure, then typography
+# 1. проверить исходник: структура, потом типографика
 python3 scripts/source_lint.py     assets/sample-article.ru.md
 python3 scripts/typography_lint.py assets/sample-article.ru.md --fix
 
-# 2. build every target
+# 2. собрать все цели
 python3 scripts/build_targets.py   assets/sample-article.ru.md -o out
 
-# 3. check compliance — zero ERRORs is the definition of done
+# 3. проверить соответствие — ноль ERROR означает «готово»
 python3 scripts/validate_post.py --auto 'out/*'
 
-# 4. publish the Instant View page, then relink the announcement
+# 4. опубликовать страницу IV и пересобрать анонс со ссылкой
 python3 scripts/telegraph_publish.py out/odin-istochnik.telegram-iv.html \
         --title "…" --author "…"
 python3 scripts/build_targets.py assets/sample-article.ru.md -o out \
         -p telegram --iv-url https://telegra.ph/…
 
-# 5. get a one-click copy page for VK / Dzen
+# 5. получить страницу с кнопкой «Копировать» для ВК / Дзена
 python3 scripts/wrap_preview.py out/odin-istochnik.vk.html
 ```
 
-Python 3 standard library only. No dependencies, no network except
-`telegraph_publish.py`.
+Только стандартная библиотека Python 3. Никаких зависимостей и сети, кроме
+`telegraph_publish.py`. (Playwright нужен исключительно для пересъёмки картинок
+к этому README и в работе скилла не участвует.)
 
-## The canonical source
+## Канонический исходник
 
 ```markdown
 ---
 title: Как перестать переписывать статью четыре раза
 lang: ru
-lede: One sentence that must work as a feed snippet.
-author: {{author}}
-tags: [a, b]
+lede: Одно предложение, которое должно работать как сниппет в ленте.
+author: {{автор}}
+tags: [а, б]
 canonical: https://…
 ---
 
 :::tldr
-- three actual conclusions
+- три настоящих вывода
 :::
 
-opening paragraphs
+вступительные абзацы
 <!--cut-->
 
-## Section
+## Раздел
 
-> [!NOTE] An aside
-> Moved out of the paragraph, rendered as <aside> on telegra.ph.
+> [!NOTE] Врезка
+> Вынесена из абзаца, в telegra.ph рендерится как <aside>.
 
-:::spoiler Long logs
-Folded on Habr, visible everywhere else.
+:::spoiler Длинные логи
+Сворачивается на Хабре, на остальных площадках видна целиком.
 :::
 
-| ≤ 3 columns | so it survives flattening |
+| не больше 3 колонок | чтобы пережить схлопывание |
 | --- | --- |
 ```
 
-Full element reference, with what each one becomes on each platform:
-[references/common-components.md](references/common-components.md).
+Полный справочник элементов и того, во что каждый превращается на каждой
+площадке: [references/common-components.md](references/common-components.md).
+Живой пример со всеми элементами — [assets/sample-article.ru.md](assets/sample-article.ru.md).
 
-## Layout
+## Состав
 
 ```
-SKILL.md                        the workflow the agent follows
+SKILL.md                        рабочий процесс, по которому идёт агент
 references/
-  platform-index.md             single source of truth: what each platform accepts
-  platform-telegram.md          telegra.ph nodes, IV templates, Bot API HTML
-  platform-vk.md                paste-only editor, upload flow
-  platform-dzen.md              content:encoded whitelist, RSS requirements
-  platform-habr.md              Habr Flavored Markdown, spoilers, anchors, formulas
+  platform-index.md             единый источник правды: что принимает каждая площадка
+  platform-telegram.md          узлы telegra.ph, шаблоны IV, HTML Bot API
+  platform-vk.md                редактор только для вставки, порядок загрузки картинок
+  platform-dzen.md              белый список content:encoded, требования к RSS
+  platform-habr.md              Habr Flavored Markdown, спойлеры, якоря, формулы
   typography-ru.md              «ёлочки», тире, неразрывные пробелы
   typography-en.md              curly quotes, em/en dash, ellipsis
-  structure-recipes.md          article type → skeleton; five voice profiles
-  common-components.md          canonical syntax → per-platform rendering
-  format-normalize.md           docx / pdf / plain text / rich text → Markdown
-  eval-cases.md                 regression cases
+  structure-recipes.md          тип статьи → скелет; пять профилей голоса
+  common-components.md          каноническая разметка → рендеринг по площадкам
+  format-normalize.md           docx / pdf / текст / rich text → Markdown
+  eval-cases.md                 регрессионные кейсы
 scripts/
-  build_targets.py              parser + five renderers + degradation report
-  source_lint.py                design gate before the build
-  typography_lint.py            EN/RU micro-typography, with --fix
-  validate_post.py              per-platform markup compliance
-  telegraph_publish.py          publish to telegra.ph (native Instant View)
-  wrap_preview.py               copy-to-clipboard preview page
-  extract_docx.py               .docx → Markdown, no dependencies
+  build_targets.py              парсер + пять рендереров + отчёт о деградации
+  source_lint.py                проверка исходника до сборки
+  typography_lint.py            типографика RU/EN, с --fix
+  validate_post.py              соответствие разметки каждой площадке
+  telegraph_publish.py          публикация в telegra.ph (IV из коробки)
+  wrap_preview.py               страница с кнопкой «Копировать»
+  extract_docx.py               .docx → Markdown, без зависимостей
 assets/
-  sample-article.ru.md          Russian sample exercising every element
-  sample-article.en.md          English sample
-  preview-template.html         the preview shell
-  instant-view-template.txt     starter IV rules for a self-hosted page
+  sample-article.ru.md          русский пример со всеми элементами
+  sample-article.en.md          английский пример
+  preview-template.html         оболочка предпросмотра
+  instant-view-template.txt     стартовые правила IV для своей страницы
+docs/
+  make-screenshots.mjs          пересъёмка картинок для README
+  render-md.py                  рендер .md в HTML тем же парсером
 ```
 
-## Installing as a skill
+## Установка
 
-Copy or symlink the directory into your agent's skills folder — for Claude Code,
-`~/.claude/skills/crosspost-design/` (global) or `.claude/skills/crosspost-design/`
-(per project). The agent reads `SKILL.md` and pulls in `references/` on demand.
+Скопируйте или слинкуйте каталог в папку скиллов агента — для Claude Code это
+`~/.claude/skills/crosspost-design/` (глобально) или `.claude/skills/crosspost-design/`
+(в проекте). Агент читает `SKILL.md` и подтягивает `references/` по мере
+надобности.
 
-Then just ask, in either language:
+Дальше достаточно попросить:
 
 > «Разложи эту статью по Дзену, ВК и Хабру»
-> "Make an Instant View version and a channel post out of this"
+> «Сделай Instant View и анонс в канал»
 
-## Verified platform facts
+## Откуда взяты факты о площадках
 
-Whitelists in `references/` were checked against telegra.ph/api,
+Белые списки в `references/` сверены с telegra.ph/api,
 instantview.telegram.org/docs, core.telegram.org/bots/api,
-habr.com/ru/docs/help/markdown/, habr.com/ru/docs/help/wysiwyg/ and
-dzen.ru/help/ru/website/rss-modify.html. Platforms change; re-verify before
-trusting a whitelist after an update, and fix the reference file first — the
-scripts read their rules from the same facts.
+habr.com/ru/docs/help/markdown/, habr.com/ru/docs/help/wysiwyg/ и
+dzen.ru/help/ru/website/rss-modify.html. Площадки меняются: после обновлений
+перепроверяйте и правьте сначала файл в `references/` — скрипты опираются на те
+же факты.
 
-## Licence
+## Лицензия
 
-AGPL-3.0, inherited from the upstream project. See [LICENSE](LICENSE) and
+AGPL-3.0, унаследована от исходного проекта. См. [LICENSE](LICENSE) и
 [NOTICE](NOTICE).

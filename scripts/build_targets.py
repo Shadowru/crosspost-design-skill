@@ -852,13 +852,17 @@ def build_tg_post(doc, iv_url):
     if tags:
         parts.append(" ".join("#" + re.sub(r"[^\w]+", "_", x, flags=re.U) for x in tags))
 
+    # Telegram counts the visible text; tags travel as separate entities.
+    def visible(s):
+        return len(re.sub(r"<[^>]+>", "", s))
+
     post = "\n\n".join(p for p in parts if p)
     truncated = False
-    while len(post) > MAX_TG_POST and len(parts) > 2:
+    while visible(post) > MAX_TG_POST and len(parts) > 2:
         parts.pop(-2)
         post = "\n\n".join(p for p in parts if p)
         truncated = True
-    return post, truncated
+    return post, truncated, visible(post)
 
 
 # --------------------------------------------------------------------------
@@ -999,7 +1003,7 @@ def build(path, outdir, platforms, slug=None, iv_url=None):
         write("%s.telegram-iv.html" % slug, body)
         ivbody, r2 = render_html_target(IVPAGE, doc)
         write("%s.iv-page.html" % slug, iv_page(doc, ivbody, canonical))
-        post, truncated = build_tg_post(doc, iv_url)
+        post, truncated, post_len = build_tg_post(doc, iv_url)
         write("%s.telegram-post.html" % slug, post)
         notes = list(r.notes)
         if truncated:
@@ -1012,8 +1016,8 @@ def build(path, outdir, platforms, slug=None, iv_url=None):
             notes.append("telegra.ph renders reliably only for images hosted on Telegram — "
                          "run scripts/telegraph_publish.py and check every image")
         report.append(("Telegram", "%s.telegram-iv.html / %s.iv-page.html / "
-                       "%s.telegram-post.html (%d chars)" % (slug, slug, slug, len(post)),
-                       notes))
+                       "%s.telegram-post.html (%d of %d characters)"
+                       % (slug, slug, slug, post_len, MAX_TG_POST), notes))
 
     if "vk" in platforms:
         body, r = render_html_target(VK, doc)
