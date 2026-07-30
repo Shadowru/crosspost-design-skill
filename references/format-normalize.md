@@ -1,6 +1,6 @@
-# Format normalisation — everything becomes canonical Markdown first
+# Format normalisation — everything becomes source Markdown first
 
-The build pipeline only understands the canonical Markdown described in
+The build pipeline only understands the source Markdown described in
 [common-components.md](common-components.md). Anything else gets converted here
 first, then confirmed with the user, then built. Conversion **restructures, it
 never rewrites** — no added, cut or reworded content.
@@ -98,6 +98,6 @@ When the user says "just build it", "no questions", "one shot":
    headings you invented, platforms chosen and why, and the degradation summary
    from the build report.
 3. If the user dislikes a decision, change that one thing and rebuild — the
-   canonical source makes this cheap.
+   source makes this cheap.
 
 Default when the genre gives no signal: build all four targets.

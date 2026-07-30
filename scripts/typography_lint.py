@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Russian / English micro-typography linter for canonical Markdown.
+"""Russian / English micro-typography linter for the source Markdown.
 
 The original WeChat skill enforced full-width CJK punctuation. The EN/RU
 equivalent is this: proper quotation marks, real dashes, ellipses, no stray

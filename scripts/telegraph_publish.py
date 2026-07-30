@@ -10,9 +10,14 @@ Usage:
     telegraph_publish.py post.telegram-iv.html --title "…" --token <access_token>
     telegraph_publish.py post.telegram-iv.html --title "…" --dry-run   # print JSON
 
+    # republish an existing page in place, keeping its URL:
+    telegraph_publish.py post.telegram-iv.html --title "…" \
+        --token <access_token> --edit My-Page-Path-01-02
+
 Without --token a throwaway account is created and its access_token is printed;
-save it if you want to edit the page later. Network access is required unless
---dry-run is used.
+save it — editing a page later is impossible without it, and republishing under
+a new URL breaks every link you have already shared. Network access is required
+unless --dry-run is used.
 
 Exit codes: 0 published (or dry run); 1 failure.
 """
@@ -107,6 +112,9 @@ def main():
     ap.add_argument("--author", default="")
     ap.add_argument("--author-url", default="")
     ap.add_argument("--token", help="existing telegra.ph access_token")
+    ap.add_argument("--edit", metavar="PATH",
+                    help="update this existing page instead of creating a new one "
+                         "(the part of the URL after telegra.ph/); requires --token")
     ap.add_argument("--dry-run", action="store_true", help="print the Node JSON, post nothing")
     args = ap.parse_args()
 
@@ -127,6 +135,11 @@ def main():
         print(json.dumps(nodes, ensure_ascii=False, indent=2))
         return 0
 
+    if args.edit and not args.token:
+        print("✗ --edit needs --token: only the account that created a page can "
+              "change it", file=sys.stderr)
+        return 1
+
     try:
         token = args.token
         if not token:
@@ -137,19 +150,23 @@ def main():
             })
             token = acct["access_token"]
             print("• new telegra.ph account — save this token to edit later:\n  %s" % token)
-        page = api("createPage", {
+        params = {
             "access_token": token,
             "title": args.title[:256],
             "author_name": args.author[:128],
             "author_url": args.author_url,
             "content": json.dumps(nodes, ensure_ascii=False),
             "return_content": "false",
-        })
+        }
+        if args.edit:
+            page = api("editPage/" + args.edit.strip("/"), params)
+        else:
+            page = api("createPage", params)
     except Exception as e:                       # network, API or JSON failure
         print("✗ publishing failed: %s" % e, file=sys.stderr)
         return 1
 
-    print("✓ published: %s" % page["url"])
+    print("✓ %s: %s" % ("updated" if args.edit else "published", page["url"]))
     print("  paste that URL in Telegram — the Instant View button is automatic")
     print("  feed it back as --iv-url to build_targets.py to link the announcement")
     return 0

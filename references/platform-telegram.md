@@ -92,7 +92,7 @@ report. If it truncated, shorten the lede rather than accepting the cut.
 
 ## Element map
 
-| Canonical | telegra.ph page | Channel post |
+| Source | telegra.ph page | Channel post |
 |---|---|---|
 | `## Section` | `<h3>` | omitted (post is not an outline) |
 | `### Sub` | `<h4>` | omitted |

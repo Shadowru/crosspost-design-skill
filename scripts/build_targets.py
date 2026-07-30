@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Canonical Markdown -> Telegram Instant View / VK / Dzen / Habr artifacts.
+"""Source Markdown -> Telegram Instant View / VK / Dzen / Habr artifacts.
 
-The design work happens in the canonical source (structure, lede, callouts,
+The design work happens in the source (structure, lede, callouts,
 rhythm). This script does the deterministic part: it degrades that single
 source into each platform's *whitelisted* markup and reports every loss, so
 nothing silently disappears between the draft and the published post.
@@ -1075,7 +1075,7 @@ def build(path, outdir, platforms, slug=None, iv_url=None):
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("source", help="canonical Markdown file")
+    ap.add_argument("source", help="source Markdown file")
     ap.add_argument("-o", "--outdir", default="out")
     ap.add_argument("-p", "--platforms", default="all",
                     help="comma-separated: telegram,vk,dzen,habr (default all)")

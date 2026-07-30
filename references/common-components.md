@@ -1,8 +1,8 @@
-# Component library — canonical syntax and what it becomes
+# Component library — source syntax and what it becomes
 
 This is the equivalent of a theme's component library, except that the
 "components" cannot carry colour, spacing or type. They carry *semantics*, and
-each platform renders them with whatever it has. Write the canonical source
+each platform renders them with whatever it has. Write the source
 using only what is documented here — anything else is guesswork at build time.
 
 Every example below is real input for `scripts/build_targets.py`.
@@ -86,7 +86,7 @@ preview text on a separate screen).
 
 ## 3. Emphasis
 
-| Canonical | Meaning | telegra.ph | TG post | VK | Dzen | Habr |
+| Source | Meaning | telegra.ph | TG post | VK | Dzen | Habr |
 |---|---|---|---|---|---|---|
 | `**bold**` | the anchor of a section | `<strong>` | `<b>` | `<b>` | `<b>` | `**` |
 | `*italic*` | a term, a title, a voice shift | `<em>` | `<i>` | `<i>` | `<i>` | `*` |

@@ -46,7 +46,7 @@ Fill in before use: `<channel><title>`, `<link>`, the item `<link>`/`<guid>`
 
 ## Element map
 
-| Canonical | Dzen |
+| Source | Dzen |
 |---|---|
 | `## Section` | `<h2>` |
 | `### Sub` | `<h3>` |

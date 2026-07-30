@@ -1,6 +1,6 @@
 ---
 name: crosspost-design
-description: Formats one article for Telegram Instant View, VK, Dzen and Habr, in English or Russian. Builds each platform's whitelisted markup from a single canonical Markdown source — telegra.ph/IV page, channel announcement, paste-safe VK article, Dzen content:encoded and RSS item, Habr Flavored Markdown — with section rhythm, TL;DR, callouts, footnotes, EN/RU micro-typography (« », —, …) and a report of what each platform degraded. Accepts Markdown, .docx, PDF and plain text. Use when the user mentions Instant View, telegra.ph, VK articles, Дзен, Хабр or cross-posting, or asks in Russian to «сверстать статью», «оформить статью для», «адаптировать под» площадку — or wants one text published on several platforms. Also for typography-only requests: "fix the typography", «починить типографику», «поправить кавычки и тире» — run typography_lint.py without building. Not for web pages or slide decks.
+description: Formats one article for Telegram Instant View, VK, Dzen and Habr, in English or Russian. Builds each platform's whitelisted markup from a single Markdown source — telegra.ph/IV page, channel announcement, paste-safe VK article, Dzen content:encoded and RSS item, Habr Flavored Markdown — with section rhythm, TL;DR, callouts, footnotes, EN/RU micro-typography (« », —, …) and a report of what each platform degraded. Accepts Markdown, .docx, PDF and plain text. Use when the user mentions Instant View, telegra.ph, VK articles, Дзен, Хабр or cross-posting, or asks in Russian to «сверстать статью», «оформить статью для», «адаптировать под» площадку — or wants one text published on several platforms. Also for typography-only requests: "fix the typography", «починить типографику», «поправить кавычки и тире» — run typography_lint.py without building. Not for web pages or slide decks.
 ---
 
 # Multi-platform post design — Telegram IV · VK · Dzen · Habr
@@ -14,8 +14,8 @@ is not decoration. It is *structure*: section rhythm, one clear anchor per
 section, a lede that survives as a feed snippet, and typography (« », — , …,
 non-breaking spaces) that platforms preserve because it is Unicode, not style.
 
-The pipeline is: **canonical Markdown → deterministic build → validation.**
-You do the editorial work in the canonical source. Scripts do the mechanical
+The pipeline is: **one Markdown source → deterministic build → validation.**
+You do the editorial work in that source. Scripts do the mechanical
 degradation and tell you exactly what each platform lost.
 
 ## Workflow
@@ -56,7 +56,7 @@ skeleton — lede, TL;DR, section count, where callouts and images belong, how t
 piece ends — which is what keeps articles of the same type feeling consistent.
 Do not improvise a structure per article.
 
-### 3. Write the canonical source
+### 3. Write the source
 
 One file, one truth. Front matter plus body, using only the conventions in
 [references/common-components.md](references/common-components.md):
@@ -220,7 +220,7 @@ the most common way to lose a day.
 
 ## Gotchas (the ones that actually bite)
 
-- **Writing HTML by hand for a platform.** Always go through the canonical
+- **Writing HTML by hand for a platform.** Always go through the
   source and rebuild; the outputs are build artifacts.
 - **Silent degradation.** A table pasted into VK simply vanishes. If the report
   says something degraded, either accept it explicitly or restructure the source.
@@ -254,7 +254,7 @@ New platforms go in `references/platform-{name}.md` and must document:
 
 1. **Accepted tags and attributes** (with the source you verified it against).
 2. **Ingestion path** — paste, HTML, Markdown, RSS, API.
-3. **Element map** — what each canonical element becomes, and what it degrades to.
+3. **Element map** — what each source element becomes, and what it degrades to.
 4. **Hard limits** — lengths, image sizes, heading depth.
 5. **Editorial conventions** — what the audience there expects.
 

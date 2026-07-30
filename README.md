@@ -1,6 +1,6 @@
 # crosspost-design · Telegram IV · ВКонтакте · Дзен · Хабр
 
-**Один канонический Markdown → четыре опубликованные статьи, на русском или английском.**
+**Один исходный текст → четыре опубликованные статьи, на русском или английском.**
 
 Скилл для агента (Claude Code / Codex / Cursor …), который верстает статью под
 Telegram Instant View, ВК, Дзен и Хабр — площадки, каждая из которых вырезает
@@ -147,7 +147,7 @@ python3 scripts/wrap_preview.py out/odin-istochnik.vk.html
 `telegraph_publish.py`. (Playwright нужен исключительно для пересъёмки картинок
 к этому README и в работе скилла не участвует.)
 
-## Канонический исходник
+## Исходный текст
 
 ```markdown
 ---
@@ -196,7 +196,7 @@ references/
   typography-ru.md              «ёлочки», тире, неразрывные пробелы
   typography-en.md              curly quotes, em/en dash, ellipsis
   structure-recipes.md          тип статьи → скелет; пять профилей голоса
-  common-components.md          каноническая разметка → рендеринг по площадкам
+  common-components.md          исходная разметка → рендеринг по площадкам
   format-normalize.md           docx / pdf / текст / rich text → Markdown
   eval-cases.md                 регрессионные кейсы
 scripts/

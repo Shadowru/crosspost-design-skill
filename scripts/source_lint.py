@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Design gate for the canonical source, before anything is built.
+"""Design gate for the source, before anything is built.
 
 None of the four target platforms lets you style your way out of a badly
 structured article: no CSS survives, so rhythm, hierarchy and restraint are

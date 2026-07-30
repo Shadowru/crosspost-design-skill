@@ -60,7 +60,7 @@ second screen of the publication flow, separately from the article. So:
 
 ## Element map
 
-| Canonical | Habr |
+| Source | Habr |
 |---|---|
 | `## Section` | `##` |
 | `### Sub` | `###` |

@@ -1,6 +1,6 @@
 # crosspost-design · Telegram IV · VK · Dzen · Habr
 
-**One canonical Markdown source → four published articles, in English or Russian.**
+**One Markdown source → four published articles, in English or Russian.**
 
 An agent skill (Claude Code / Codex / Cursor …) that formats an article for
 Telegram Instant View, VK, Dzen and Habr — platforms that all strip CSS and
@@ -148,7 +148,7 @@ Python 3 standard library only. No dependencies, no network except
 `telegraph_publish.py`. (Playwright is needed only to regenerate this README's
 images and plays no part in the skill itself.)
 
-## The canonical source
+## The source
 
 ```markdown
 ---
@@ -197,7 +197,7 @@ references/
   typography-ru.md              «ёлочки», тире, неразрывные пробелы
   typography-en.md              curly quotes, em/en dash, ellipsis
   structure-recipes.md          article type → skeleton; five voice profiles
-  common-components.md          canonical syntax → per-platform rendering
+  common-components.md          source syntax → per-platform rendering
   format-normalize.md           docx / pdf / plain text / rich text → Markdown
   eval-cases.md                 regression cases
 scripts/

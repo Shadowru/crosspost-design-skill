@@ -12,7 +12,7 @@ tone: editorial
 # Stop rewriting the same article four times
 
 :::tldr
-- Keep one canonical Markdown source instead of four drafts.
+- Keep one Markdown source instead of four drafts.
 - Each platform’s markup is a whitelist, not a matter of taste.
 - Whatever a platform cannot render degrades on purpose, and lands in a report.
 :::
@@ -36,7 +36,7 @@ Every platform accepts a whitelist of markup, and it is far shorter than people 
 
 ## What a single source buys you
 
-Canonical Markdown stores **meaning**, not presentation. The builder then decides how that meaning shows up on a given platform.
+The source stores **meaning**, not presentation. The builder then decides how that meaning shows up on a given platform.
 
 1. Parse the text into a block tree.
 2. Apply each platform’s markup map.
