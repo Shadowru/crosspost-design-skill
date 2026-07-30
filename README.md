@@ -271,13 +271,17 @@ ln -sfn "$(pwd)/crosspost-design-skill" ~/.claude/skills/crosspost-design
 1. **Настройки → Возможности** (Settings → Capabilities) — включите выполнение
    кода. В Team и Enterprise владелец организации должен сначала разрешить
    скиллы в **Настройках организации → Skills**.
-2. Соберите архив:
+2. Скачайте
+   [`crosspost-design.zip`](https://github.com/Shadowru/crosspost-design-skill/releases/latest/download/crosspost-design.zip)
+   со страницы релизов (~88 КБ). Клонировать репозиторий для этого не нужно.
+
+   Если работаете с исходниками, тот же архив собирается локально:
    ```bash
    python3 scripts/make_web_zip.py
    ```
-   Получится `crosspost-design.zip` (~88 КБ). Скрипт сам кладёт внутрь папку
-   `crosspost-design/` с `SKILL.md` в корне — именно такой структуры ждёт
-   claude.ai, и именно на ней чаще всего спотыкаются при ручной архивации.
+   Скрипт кладёт внутрь папку `crosspost-design/` с `SKILL.md` в корне — именно
+   такой структуры ждёт claude.ai, и именно на ней чаще всего спотыкаются при
+   ручной архивации.
 3. **Customize → Skills → + → Upload a skill** — выберите архив.
 
 Дальше просто просите обычными словами; можно и прямо: «используй

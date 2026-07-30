@@ -272,13 +272,17 @@ needs code execution turned on — without it the skill's scripts cannot run.
 1. **Settings → Capabilities** — turn on code execution. On Team and Enterprise,
    an organization owner has to allow skills first under **Organization
    settings → Skills**.
-2. Build the archive:
+2. Download
+   [`crosspost-design.zip`](https://github.com/Shadowru/crosspost-design-skill/releases/latest/download/crosspost-design.zip)
+   from the releases page (~88 KB). No need to clone the repository for this.
+
+   Working from source, the same archive builds locally:
    ```bash
    python3 scripts/make_web_zip.py
    ```
-   You get `crosspost-design.zip` (~88 KB). The script puts a
-   `crosspost-design/` folder with `SKILL.md` at the archive root — the exact
-   shape claude.ai expects, and the one hand-made zips usually get wrong.
+   The script puts a `crosspost-design/` folder with `SKILL.md` at the archive
+   root — the exact shape claude.ai expects, and the one hand-made zips usually
+   get wrong.
 3. **Customize → Skills → + → Upload a skill** — pick the archive.
 
 Then just ask in plain language, or explicitly: "use crosspost-design to…".
