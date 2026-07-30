@@ -1,0 +1,24 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "crosspost-design",
+  "description": "Вёрстка статей под Telegram Instant View, ВКонтакте, Дзен и Хабр",
+  "owner": {
+    "name": "Shadowru",
+    "url": "https://github.com/Shadowru"
+  },
+  "plugins": [
+    {
+      "name": "crosspost-design",
+      "source": "./",
+      "description": "Верстает одну статью под Telegram Instant View, ВКонтакте, Дзен и Хабр на русском или английском: собирает разметку по белому списку каждой площадки и показывает, что именно там потерялось. Formats one article for Telegram Instant View, VK, Dzen and Habr in Russian or English.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "author": {
+        "name": "Shadowru",
+        "url": "https://github.com/Shadowru"
+      },
+      "homepage": "https://github.com/Shadowru/crosspost-design-skill",
+      "license": "AGPL-3.0-or-later"
+    }
+  ]
+}

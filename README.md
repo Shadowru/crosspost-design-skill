@@ -219,10 +219,28 @@ docs/
 
 ## Установка
 
-Скопируйте или слинкуйте каталог в папку скиллов агента — для Claude Code это
-`~/.claude/skills/crosspost-design/` (глобально) или `.claude/skills/crosspost-design/`
-(в проекте). Агент читает `SKILL.md` и подтягивает `references/` по мере
-надобности.
+Репозиторий одновременно является плагином и маркетплейсом Claude Code, поэтому
+ставится в две команды:
+
+```
+/plugin marketplace add Shadowru/crosspost-design-skill
+/plugin install crosspost-design@crosspost-design
+```
+
+Дальше `/reload-plugins`. Обновления приходят через `/plugin marketplace update
+crosspost-design`.
+
+Вручную тоже работает: скопируйте или слинкуйте каталог в
+`~/.claude/skills/crosspost-design/` (глобально) или
+`.claude/skills/crosspost-design/` (в проекте) — благодаря
+`.claude-plugin/plugin.json` он подхватится сам со следующей сессии. Агент
+читает `SKILL.md` и подтягивает `references/` по мере надобности.
+
+Проверить, что всё живо, после установки:
+
+```bash
+scripts/selftest.sh     # 24 проверки: сборка обоих примеров + срабатывание гейтов
+```
 
 Дальше достаточно попросить — формулировка любая, скилл срабатывает на смысл:
 

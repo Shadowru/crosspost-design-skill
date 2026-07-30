@@ -220,9 +220,26 @@ docs/
 
 ## Installing as a skill
 
-Copy or symlink the directory into your agent's skills folder — for Claude Code,
+The repository is both a plugin and its own marketplace, so two commands do it:
+
+```
+/plugin marketplace add Shadowru/crosspost-design-skill
+/plugin install crosspost-design@crosspost-design
+```
+
+Then `/reload-plugins`. Updates arrive via `/plugin marketplace update
+crosspost-design`.
+
+Copying works too: put or symlink the directory at
 `~/.claude/skills/crosspost-design/` (global) or `.claude/skills/crosspost-design/`
-(per project). The agent reads `SKILL.md` and pulls in `references/` on demand.
+(per project) — `.claude-plugin/plugin.json` makes it auto-load next session. The
+agent reads `SKILL.md` and pulls in `references/` on demand.
+
+To check that everything still works after installing:
+
+```bash
+scripts/selftest.sh     # 24 checks: both samples built, every gate fires
+```
 
 Then just ask, in either language:
 
