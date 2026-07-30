@@ -1,0 +1,55 @@
+# Instant View template for pages built by build_targets.py (--> {slug}.iv-page.html)
+#
+# Paste this into the rule editor at https://instantview.telegram.org/, replace
+# the domain in the first line, and hit Check. The generated page is deliberately
+# plain semantic HTML, so the template stays this short.
+#
+# Reference: https://instantview.telegram.org/docs
+# IV version: 2.1
+
+~version: "2.1"
+
+?path: /.+
+
+# ---------------------------------------------------------------- properties
+title:     //article/h1
+subtitle:  //article/p[@class="lede"]
+author:    //article//address
+author_url: $@href
+published_date: //article//time/@datetime
+site_name: "Your site name"
+cover:     //meta[@property="og:image"]/@content
+image_url: $cover
+
+# ------------------------------------------------------------------ the body
+body: //article
+
+# Remove the parts that the IV chrome already shows.
+@remove: $body/h1
+@remove: $body/p[@class="lede"]
+@remove: $body/p[address]
+
+# ------------------------------------------------------------ normalisation
+# IV understands h1-h6, but reserves the largest for the article title.
+@replace_tag(<h3>): $body//h2
+@replace_tag(<h4>): $body//h3
+
+# Figures: keep the caption attached to its image.
+@wrap_inner(<figcaption>): $body//figure/figcaption
+
+# Callouts built as <aside> render as pull-quote blocks.
+@replace_tag(<blockquote>): $body//aside
+
+# Embeds: let IV handle known providers itself.
+@set_attr(data-iframe-url, @src): $body//iframe
+@iframe_inline: $body//iframe
+
+# Tables survive on a self-hosted page (unlike telegra.ph).
+@enter: $body//table
+
+# --------------------------------------------------------------------- notes
+# * If your CMS wraps the article in extra containers, point `body:` at the
+#   innermost element that holds only article content.
+# * Every rule is XPath 1.0 over the live DOM — use the editor's DOM panel to
+#   check a selector before trusting it.
+# * telegra.ph pages need none of this: Instant View is automatic there.

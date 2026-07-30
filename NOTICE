@@ -1,0 +1,55 @@
+crosspost-design
+=================
+
+An adaptation of **gzh-design-skill** — https://github.com/isjiamu/gzh-design-skill
+Copyright (C) 2026 甲木 (Jiamu) × 摸鱼小李 (Moyu Xiaoli), AGPL-3.0.
+
+The upstream project formats Markdown for WeChat Official Accounts (公众号) in
+Chinese. This project targets Telegram Instant View, VK, Dzen and Habr in
+English and Russian. It is a derivative work and stays under AGPL-3.0.
+
+What was kept
+-------------
+* The overall skill shape: `SKILL.md` as the workflow, `references/` as the
+  library of record, `scripts/` as deterministic gates, `assets/` for samples,
+  `references/eval-cases.md` for regression cases.
+* The editorial philosophy: recipes per article type, a hierarchy budget, a
+  single source of truth for platform facts, "never hand-write the output".
+* The two-gate quality loop: a design linter before the build, a compliance
+  validator after it.
+
+What was adapted from upstream code
+-----------------------------------
+* `scripts/extract_docx.py` — ported from the upstream extractor; Chinese style
+  names replaced with English/Russian/German/French heading styles, italics
+  added, messages translated.
+* `scripts/wrap_preview.py` and `assets/preview-template.html` — the copy-to-
+  clipboard preview idea and DOM-selection technique come from upstream; the
+  page was rewritten for EN/RU, dark mode and multiple target editors.
+
+What was replaced entirely
+--------------------------
+* **Themes → platform profiles.** Upstream carries six colour themes of inline
+  CSS because WeChat allows arbitrary inline styles. None of the four targets
+  here allow any CSS, so colour themes are meaningless. Their role is taken by
+  `references/platform-*.md` (markup whitelists) and
+  `references/structure-recipes.md` (skeleton and voice).
+* **Full-width CJK punctuation → EN/RU micro-typography.**
+  `scripts/typography_lint.py` replaces the 全角 checks with «ёлочки», curly
+  quotes, em/en dashes, ellipses and non-breaking spaces, with `--fix`.
+* **`validate_gzh_html.py` → `scripts/validate_post.py`**, a per-platform
+  whitelist checker (telegra.ph nodes, Bot API HTML, VK paste, Dzen
+  content:encoded, Habr Flavored Markdown).
+* **`component_lint.py` → `scripts/source_lint.py`**, which lints the canonical
+  source for design failures instead of linting theme libraries.
+* **New: `scripts/build_targets.py`** — the canonical-Markdown parser and the
+  five renderers. Nothing equivalent exists upstream, where the model assembles
+  HTML from component libraries by hand.
+* **New: `scripts/telegraph_publish.py`** — publishes the built body to
+  telegra.ph, which gives Instant View without writing a template.
+
+Platform facts in `references/` were verified against, and are cited from:
+telegra.ph/api, instantview.telegram.org/docs, core.telegram.org/bots/api,
+habr.com/ru/docs/help/markdown/, habr.com/ru/docs/help/wysiwyg/ and
+dzen.ru/help/ru/website/rss-modify.html. Re-verify before trusting them after
+any platform update.
