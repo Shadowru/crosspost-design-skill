@@ -221,28 +221,87 @@ docs/
 
 ## Установка
 
-Репозиторий одновременно является плагином и маркетплейсом Claude Code, поэтому
-ставится в две команды:
+Репозиторий одновременно и плагин, и маркетплейс: `.claude-plugin/plugin.json`
+описывает сам скилл, `.claude-plugin/marketplace.json` — каталог из одного
+плагина. Поэтому отдельный установщик не нужен.
+
+**Claude Code:**
 
 ```
 /plugin marketplace add Shadowru/crosspost-design-skill
 /plugin install crosspost-design@crosspost-design
 ```
 
-Дальше `/reload-plugins`. Обновления приходят через `/plugin marketplace update
-crosspost-design`.
+Дальше `/reload-plugins` — и скилл доступен в текущей сессии.
 
-Вручную тоже работает: скопируйте или слинкуйте каталог в
-`~/.claude/skills/crosspost-design/` (глобально) или
-`.claude/skills/crosspost-design/` (в проекте) — благодаря
-`.claude-plugin/plugin.json` он подхватится сам со следующей сессии. Агент
-читает `SKILL.md` и подтягивает `references/` по мере надобности.
+> [!NOTE]
+> Обновления: `/plugin marketplace update crosspost-design`. Если новая версия
+> не подхватилась, почистите кэш и поставьте заново:
+> ```
+> rm -rf ~/.claude/plugins/cache/crosspost-design ~/.claude/plugins/marketplaces/crosspost-design
+> /plugin marketplace add Shadowru/crosspost-design-skill
+> /plugin install crosspost-design@crosspost-design
+> ```
 
-Проверить, что всё живо, после установки:
+**Claude Code, без маркетплейса:**
+
+Скилл — это каталог с `SKILL.md` в корне, поэтому достаточно положить его туда,
+где агент ищет скиллы. Благодаря `.claude-plugin/plugin.json` он подхватится сам
+со следующей сессии.
 
 ```bash
-scripts/selftest.sh     # 24 проверки: сборка обоих примеров + срабатывание гейтов
+git clone https://github.com/Shadowru/crosspost-design-skill.git
+mkdir -p ~/.claude/skills
+ln -sfn "$(pwd)/crosspost-design-skill" ~/.claude/skills/crosspost-design
 ```
+
+Для одного проекта — то же самое в `.claude/skills/crosspost-design`.
+
+> [!WARNING]
+> Не ставьте обоими способами сразу. Копия из маркетплейса имеет приоритет, и
+> симлинк молча не загрузится — `claude plugin list` покажет
+> «name is already taken». Выберите один путь.
+
+<details>
+<summary><strong>Другие агенты</strong></summary>
+
+Раскладка обычная: один скилл, `SKILL.md` в корне, рядом `references/`,
+`scripts/` и `assets/`. Любой агент, который читает скиллы из каталога,
+подхватит его симлинком — меняется только путь.
+
+**OpenAI Codex:**
+
+```bash
+git clone https://github.com/Shadowru/crosspost-design-skill.git
+mkdir -p ~/.codex/skills
+ln -sfn "$(pwd)/crosspost-design-skill" ~/.codex/skills/crosspost-design
+```
+
+**Windows PowerShell:**
+
+```powershell
+git clone https://github.com/Shadowru/crosspost-design-skill.git
+New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null
+New-Item -ItemType SymbolicLink -Path "$HOME\.claude\skills\crosspost-design" `
+         -Target "$(Get-Location)\crosspost-design-skill" -Force | Out-Null
+```
+
+Симлинки в Windows требуют режима разработчика или прав администратора.
+
+Проверено на этой машине только для Claude Code — остальные пути следуют
+конвенции соответствующего агента. Если у вас не подхватилось, скажите, поправим.
+
+</details>
+
+Проверить, что установка живая:
+
+```bash
+scripts/selftest.sh    # 27 проверок: оба примера собираются, гейты срабатывают
+```
+
+Скрипты — чистый Python 3 без единой зависимости. Ни pip, ни Docker, ни Node
+для работы скилла не нужны (Playwright — только чтобы пересобрать картинки к
+этому README).
 
 Дальше достаточно попросить — формулировка любая, скилл срабатывает на смысл:
 

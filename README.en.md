@@ -220,28 +220,90 @@ docs/
   render-md.py                  render .md to HTML with the same parser
 ```
 
-## Installing as a skill
+## Install
 
-The repository is both a plugin and its own marketplace, so two commands do it:
+The repository is both a plugin and its own marketplace:
+`.claude-plugin/plugin.json` describes the skill, `.claude-plugin/marketplace.json`
+is a one-plugin catalog. No separate installer needed.
+
+**Claude Code:**
 
 ```
 /plugin marketplace add Shadowru/crosspost-design-skill
 /plugin install crosspost-design@crosspost-design
 ```
 
-Then `/reload-plugins`. Updates arrive via `/plugin marketplace update
-crosspost-design`.
+Then `/reload-plugins` and the skill is live in the current session.
 
-Copying works too: put or symlink the directory at
-`~/.claude/skills/crosspost-design/` (global) or `.claude/skills/crosspost-design/`
-(per project) — `.claude-plugin/plugin.json` makes it auto-load next session. The
-agent reads `SKILL.md` and pulls in `references/` on demand.
+> [!NOTE]
+> Updates: `/plugin marketplace update crosspost-design`. If a new version does
+> not show up, clear the cache and reinstall:
+> ```
+> rm -rf ~/.claude/plugins/cache/crosspost-design ~/.claude/plugins/marketplaces/crosspost-design
+> /plugin marketplace add Shadowru/crosspost-design-skill
+> /plugin install crosspost-design@crosspost-design
+> ```
 
-To check that everything still works after installing:
+**Claude Code, without the marketplace:**
+
+The skill is a directory with `SKILL.md` at its root, so dropping it where the
+agent looks for skills is enough. `.claude-plugin/plugin.json` makes it auto-load
+on the next session.
 
 ```bash
-scripts/selftest.sh     # 24 checks: both samples built, every gate fires
+git clone https://github.com/Shadowru/crosspost-design-skill.git
+mkdir -p ~/.claude/skills
+ln -sfn "$(pwd)/crosspost-design-skill" ~/.claude/skills/crosspost-design
 ```
+
+For a single project, do the same under `.claude/skills/crosspost-design`.
+
+> [!WARNING]
+> Do not install both ways at once. The marketplace copy takes precedence and
+> the symlinked one silently fails to load — `claude plugin list` reports
+> "name is already taken". Pick one route.
+
+<details>
+<summary><strong>Other agents</strong></summary>
+
+The layout is ordinary: one skill, `SKILL.md` at the root, with `references/`,
+`scripts/` and `assets/` beside it. Any agent that loads skills from a directory
+picks it up with a symlink — only the path changes.
+
+**OpenAI Codex:**
+
+```bash
+git clone https://github.com/Shadowru/crosspost-design-skill.git
+mkdir -p ~/.codex/skills
+ln -sfn "$(pwd)/crosspost-design-skill" ~/.codex/skills/crosspost-design
+```
+
+**Windows PowerShell:**
+
+```powershell
+git clone https://github.com/Shadowru/crosspost-design-skill.git
+New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null
+New-Item -ItemType SymbolicLink -Path "$HOME\.claude\skills\crosspost-design" `
+         -Target "$(Get-Location)\crosspost-design-skill" -Force | Out-Null
+```
+
+Windows symlinks need Developer Mode or elevated privileges.
+
+Only the Claude Code path was verified on the machine this was built on; the
+others follow each agent's own convention. If one does not work for you, open an
+issue and it gets fixed.
+
+</details>
+
+To check the install is alive:
+
+```bash
+scripts/selftest.sh    # 27 checks: both samples build, every gate fires
+```
+
+The scripts are pure Python 3 with zero dependencies. No pip, no Docker, no Node
+needed to run the skill (Playwright is only for regenerating this README's
+images).
 
 Then just ask, in either language:
 
