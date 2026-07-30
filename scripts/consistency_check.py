@@ -44,6 +44,29 @@ def strip_code(text):
     return re.sub(r"`[^`\n]*`", "", text)
 
 
+DESC_LIMIT = 1024          # claude.ai rejects the upload above this
+NAME_RX = re.compile(r"^[a-z0-9-]+$")
+
+
+def check_frontmatter(root):
+    """Limits the upload enforces but nothing local warns about."""
+    head = read(os.path.join(root, "SKILL.md")).split("---")[1]
+    name = re.search(r"^name:\s*(.*)$", head, re.M)
+    desc = re.search(r"^description:\s*(.*)$", head, re.M)
+    if not name or not NAME_RX.match(name.group(1).strip()):
+        fail("SKILL.md `name` must be lowercase letters, digits and hyphens")
+    if not desc:
+        fail("SKILL.md has no `description` — the skill will never be selected")
+        return
+    n = len(desc.group(1).strip())
+    if n > DESC_LIMIT:
+        fail("SKILL.md description is %d characters, claude.ai rejects the upload "
+             "above %d — trim it by %d" % (n, DESC_LIMIT, n - DESC_LIMIT))
+    elif n > DESC_LIMIT * 0.92:
+        warn("SKILL.md description is %d of %d characters — little room left"
+             % (n, DESC_LIMIT))
+
+
 def check_links(root):
     """Every relative markdown link in SKILL.md and references/ resolves."""
     targets = [os.path.join(root, "SKILL.md")]
@@ -154,7 +177,7 @@ def main():
     args = ap.parse_args()
     root = os.path.abspath(args.root)
 
-    for check in (check_links, check_platform_wiring, check_l10n,
+    for check in (check_frontmatter, check_links, check_platform_wiring, check_l10n,
                   check_triggers, check_scripts_referenced):
         try:
             check(root)
