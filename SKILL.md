@@ -1,6 +1,6 @@
 ---
 name: crosspost-design
-description: Article formatting engine for Telegram Instant View, VK, Dzen and Habr, in English and Russian. Turns one canonical Markdown source into each platform's whitelisted markup — telegra.ph/IV page plus channel announcement, paste-safe VK article, Dzen content:encoded and RSS item, Habr Flavored Markdown — with automatic section rhythm, TL;DR block, callouts, footnotes, EN/RU micro-typography (« », — , …, non-breaking spaces) and a report of everything each platform degrades. Accepts Markdown / Word (.docx) / PDF / plain text (non-Markdown is normalised first). Triggers when the user mentions Telegram Instant View / telegra.ph, VK articles, Дзен, Habr/Хабр, "cross-posting", "adapt this post for", or, in Russian, «сверстать статью», «вёрстка поста», «оформить статью для», «подготовить текст для», «сделать версии для», «адаптировать под» a platform — or generally wants one text published on several Russian/English platforms. Not for building web pages, landing pages or slide decks (use a frontend or PPT skill).
+description: Article formatting engine for Telegram Instant View, VK, Dzen and Habr, in English and Russian. Turns one canonical Markdown source into each platform's whitelisted markup — telegra.ph/IV page plus channel announcement, paste-safe VK article, Dzen content:encoded and RSS item, Habr Flavored Markdown — with automatic section rhythm, TL;DR block, callouts, footnotes, EN/RU micro-typography (« », — , …, non-breaking spaces) and a report of everything each platform degrades. Accepts Markdown / Word (.docx) / PDF / plain text (non-Markdown is normalised first). Triggers when the user mentions Telegram Instant View / telegra.ph, VK articles, Дзен, Habr/Хабр, "cross-posting", "adapt this post for", or, in Russian, «сверстать статью», «вёрстка поста», «оформить статью для», «подготовить текст для», «сделать версии для», «адаптировать под» a platform — or generally wants one text published on several Russian/English platforms. Also triggers on typography-only requests: "fix the typography", «починить типографику», «поправить кавычки и тире», «проставить неразрывные пробелы» — run typography_lint.py without building anything. Not for building web pages, landing pages or slide decks (use a frontend or PPT skill).
 ---
 
 # Multi-platform post design — Telegram IV · VK · Dzen · Habr
@@ -100,6 +100,11 @@ quotes, em dash, `…`).
 <SKILL_ROOT>/scripts/source_lint.py <article.md>
 <SKILL_ROOT>/scripts/typography_lint.py <article.md> --fix
 ```
+
+(When editing the skill itself rather than an article, run
+`<SKILL_ROOT>/scripts/consistency_check.py` too: it catches dangling reference
+links, a platform added to the index but never given a build profile, and
+trigger phrases the description no longer covers.)
 
 `source_lint.py` is the design gate: walls of text, emphasis inflation,
 headings deeper than the platforms render, tables that will collapse, missing

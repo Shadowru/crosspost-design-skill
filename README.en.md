@@ -203,6 +203,8 @@ references/
 scripts/
   build_targets.py              parser + five renderers + degradation report
   source_lint.py                design gate before the build
+  consistency_check.py          skill vs. its own reference library
+  selftest.sh                   end-to-end self test (24 checks)
   typography_lint.py            EN/RU micro-typography, with --fix
   validate_post.py              per-platform markup compliance
   telegraph_publish.py          publish to telegra.ph (native Instant View)

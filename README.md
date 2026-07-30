@@ -202,6 +202,8 @@ references/
 scripts/
   build_targets.py              парсер + пять рендереров + отчёт о деградации
   source_lint.py                проверка исходника до сборки
+  consistency_check.py          сверка скилла с его справочниками
+  selftest.sh                   сквозная самопроверка (24 проверки)
   typography_lint.py            типографика RU/EN, с --fix
   validate_post.py              соответствие разметки каждой площадке
   telegraph_publish.py          публикация в telegra.ph (IV из коробки)

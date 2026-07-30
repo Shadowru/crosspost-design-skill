@@ -68,6 +68,16 @@ for k in ('name:','description:'):
 "
 
 echo
+echo "skill consistency"
+step "references, profiles and validators agree" \
+  python3 "$ROOT/scripts/consistency_check.py" --root "$ROOT"
+step "every eval case has a grader" bash -c '
+  for d in "'"$ROOT"'"/evals/*/; do
+    [ -f "$d/prompt.md" ] || continue
+    [ -f "$d/graders/criteria.md" ] || { echo "no grader in $d"; exit 1; }
+  done'
+
+echo
 echo "pipeline"
 for lang in ru en; do
   SRC="$ROOT/assets/sample-article.$lang.md"
